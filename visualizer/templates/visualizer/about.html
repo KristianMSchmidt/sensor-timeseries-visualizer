@@ -1,0 +1,53 @@
+{% extends 'visualizer/base.html' %}
+
+{% block title %}About{% endblock title %}
+
+{% block content %}
+    <h2 class="mt-4">Introduction</h2>
+    <p>
+        This task is about visualizing sensor timeseries data from a cultivation tank in the active pharmaceutical 
+        ingredient (API) production.  When a cell cultivation starts it is given a unique BatchID, and a cultivation 
+        batch will be active for about 24 hours. Keep in mind that the sensors will gather data even when no batch is active.
+    </p>
+
+    <h2>Description of data</h2>
+    <p>
+        The data you have received consists of timeseries data from four sensors and some batch meta information. 
+        The data is stored in tab separated csv files. 
+        <br><br>
+        The four different sensors are: 
+    </p>
+    <ul>
+        <li>400E_Temp1</li>
+        <li>400E_Temp2</li>
+        <li>400E_PH1</li>
+        <li>400E_PH2</li>
+    </ul>
+    <p>
+        and the data is sampled at a one-minute rate. 
+        The batch information contains the StartDate and EndDate for each BatchID. The BatchID column contains two types of BatchID:
+    </p>
+    <ul>    
+        <li>Production batches that follow the naming convention XP400EYYYY where X is a letter from A-Z and YYYY is the trailing batch-number that resets when X changes (BP400E0101, BP400E0102, CP400E0101, etc.).</li> 
+        <li>Test-batches that follow the naming convention TEST_YYYY</li>
+    </ul>
+    </p>
+        In between each batch a small time period is reserved for preparing the next batch and is denoted by a NULL/NaN value in the BatchID column. 
+    </p>
+    
+    <h2>Task</h2>
+    <p>
+        Please create a small Django project, that can:
+    </p>
+    <ul>
+       <li>List all the batches in the data including the duration of each batch</li>
+       <li>Visualize data from all the sensor values for each batch</li>
+            ◦ Only the production batches should be included here <br>
+            ◦ Only the active period of the batch should be included (not the time in between) <br>
+       <li>Compute and visualize the difference between the temperature (400E_Temp2 – 400E_temp1) and PH (400E_PH2 – 400E_PH2) sensors for the period of each batch</li>
+    </ul>
+    <p>
+        You can store the data in a database, in a file or in memory.<br>
+        You should store your code in a git repository.
+    </p>
+{% endblock content %}
