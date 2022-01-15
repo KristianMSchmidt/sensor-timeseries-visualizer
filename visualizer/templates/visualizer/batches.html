@@ -5,26 +5,28 @@
 {% block content %}
 
 {% for batch_id in batch_ids %}
-    <a class="btn btn-outline-primary my-3" href="{% url 'timeseries' batch_id %}">{{ batch_id }}</a>
+    <a class="btn btn-outline-primary my-3" href="{% url 'batches' batch_id %}">{{ batch_id }}</a>
 {% endfor %}
 
-<h2><span class="text-black-50">Batch:</span> {{ batch.batch_id }}</h2>
+<h2><span class="text-black-50">Batch:</span> {{ batch_info.batch_id }}</h2>
 <ul>
-    <li>Start date: {{ batch.start_date|date:"Y-m-d H:i:s" }}</li>
-    <li>End date: {{ batch.end_date|date:"Y-m-d H:i:s" }}</li>
-    <li>Duration: {{ batch.duration }}</li>
-    <li>Number of time steps: {{ data_count }}</li>
+    <li>Start date: {{ batch_info.start_date|date:"Y-m-d H:i:s" }}</li>
+    <li>End date: {{ batch_info.end_date|date:"Y-m-d H:i:s" }}</li>
+    <li>Duration: {{ batch_info.duration }}</li>
+    <li>Number of time steps: {{ time_steps }}</li>
 </ul>
 
-<h3>Sensor Data</h3>
+<h3 class="mt-4">Sensor Data</h3>
+<p class="text-muted">Click labels to show/hide data</p>
 <canvas id="sensor-data-chart"></canvas>
 
 <h3 class="mt-5">Sensor Differences</h3>
-<canvas id="sensor-time-diff-chart"></canvas>
+<p class="text-muted">Click labels to show/hide data</p>
+<canvas class="mb-5" id="sensor-time-diff-chart"></canvas>
 {% endblock content %}
 
-<!-- Javascript for rendering charts -->
 {% block javascript %}
+<!-- Javascript for rendering charts -->
 <script>
     const ctx = document.getElementById("sensor-data-chart").getContext('2d');
     const config = {

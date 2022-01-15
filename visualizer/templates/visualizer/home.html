@@ -27,7 +27,7 @@
             {% if 'TEST' in batch.batch_id %}
               <td>{{ batch.batch_id }}</td>  
             {% else %}
-              <td><a href="{% url 'timeseries' batch.batch_id %}">{{ batch.batch_id }}</td>  
+              <td><a href="{% url 'batches' batch.batch_id %}">{{ batch.batch_id }}</td>  
             {% endif %}
             </tr>
         {% endif %}
