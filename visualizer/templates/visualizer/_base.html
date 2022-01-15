@@ -1,4 +1,3 @@
-{% load static %}
 <!DOCTYPE html>
 <html>
 <head>
@@ -7,21 +6,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <!-- CSS -->
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
-  <link rel="stylesheet" href="{% static 'css/base.css' %}">
 </head>
 <body>
   <header>
     <!-- Fixed navbar -->
     <div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4
-     mb-3 bg-white border-bottom shadow-sm">
+        mb-3 bg-white border-bottom shadow-sm">
       <a href="{% url 'home' %}" class="navbar-brand my-0 mr-md-auto
-      font-weight-normal">Visualizer</a>
+          font-weight-normal">Visualizer</a>
       <nav class="my-2 my-md-0 mr-md-3">
+          <a class="p-2 text-dark" href="{% url 'home' %}">Home</a>
+          <a class="p-2 text-dark" href="{% url 'timeseries' 'AP400E0101' %}">Timeseries</a>
           <a class="p-2 text-dark" href="{% url 'about' %}">About</a>
-          <a class="p-2 text-dark" href="#">Log Out</a>
-          <a class="p-2 text-dark" href="#">Log In</a>
-          <a class="btn btn-outline-primary"
-            href="#">Sign Up</a>
       </nav>
     </div>
   </header>

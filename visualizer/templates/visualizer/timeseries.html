@@ -1,0 +1,79 @@
+{% extends 'visualizer/_base.html' %}
+
+{% block title %}Timeseries{% endblock title %}
+
+{% block content %}
+
+{% for batch_id in batch_ids %}
+    <a class="btn btn-secondary my-3" href="{% url 'timeseries' batch_id %}">{{ batch_id }}</a>
+{% endfor %}
+
+<h2><span class="text-black-50">Batch:</span> {{ batch.batch_id }}</h2>
+<ul>
+    <li>Start date: {{ batch.start_date|date:"Y-m-d H:i:s" }}</li>
+    <li>End date: {{ batch.end_date|date:"Y-m-d H:i:s" }}</li>
+    <li>Duration: {{ batch.duration }}</li>
+    <li>Number of time steps: {{ data_count }}</li>
+</ul>
+
+<canvas id="line-chart"></canvas>
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+
+<script>
+    const ctx = document.querySelector("#line-chart").getContext('2d');
+    const config = {
+      type: 'line',
+      data: {
+        labels: [],
+        datasets: [
+        {
+            data: {{ 400E_Temp1|safe }},  
+            label: "Temp1",
+            borderWidth: 1,
+            borderColor: "#3e95cd",
+            fill: false
+        },
+        {
+            data: {{ 400E_Temp2|safe }}, 
+            label: "Temp2",
+            borderWidth: 1,
+            borderColor: "red",
+            fill: false
+        },
+        {
+            data: {{ 400E_PH1|safe }},  
+            label: "PH1",
+            borderWidth: 1,
+            borderColor: "green",
+            fill: false
+        }, 
+        {
+            data: {{ 400E_PH2|safe }}, 
+            label: "PH2",
+            borderWidth: 1,
+            borderColor: "orange",
+            fill: false
+        },
+  
+        ]
+      },
+      options: {
+        scales: {
+          xAxes: [{
+            type: 'time',
+            distribution: 'linear',
+          }],
+          title: {
+            display: false,
+          }
+        }
+      }
+    };
+    
+    new Chart(ctx, config);
+
+</script>
+    
+{% endblock content %}

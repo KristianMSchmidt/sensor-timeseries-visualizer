@@ -1,29 +1,38 @@
-{% extends 'visualizer/base.html' %}
+{% extends 'visualizer/_base.html' %}
 
 {% block title %}Home{% endblock title %}
 
 {% block content %}
 
-  <h1 class="mb-5 mt-4">Visualizing Sensor Timeseries Data</h1>
-  <h2>Batches</h2>
-  <p><b>Task</b>: List all the batches in the data including the duration of each batch</p>
-  <table class="table table-striped table-bordered mb-5"> 
-    <thead>
-      <tr>
-        {% for head in header %}
-          <th>{{ head }}</th>
-        {% endfor %}
+<h2 class="mb-3 mt-5">Sensor Timeseries Batches</h2>
+
+<p>List of all the batches in the data including the duration of each batch.</p>
+
+<table class="table table-striped table-bordered mb-5"> 
+  <thead>
+    <tr>
+        <th>StartDate</th>
+        <th>EndDate</th>
+        <th>Duration</th>
+        <th>BatchID</th>
       </tr>
-    </thead>
-    <tbody>
-        {% for batch in batches %}
+  </thead>
+  <tbody>
+      {% for batch in batches %}
+        {% if batch.batch_id %}
           <tr>
-            {% for x in batch %}
-              <td>{{ x }}</td>
-            {% endfor %}
-          </tr>
-        {% endfor %}
-    </tbody>
+            <td>{{ batch.start_date|date:"Y-m-d H:i:s" }}</td>
+            <td>{{ batch.end_date|date:"Y-m-d H:i:s" }}</td>
+            <td>{{ batch.duration }}</td>
+            {% if 'TEST' in batch.batch_id %}
+              <td>{{ batch.batch_id }}</td>  
+            {% else %}
+              <td><a href="{% url 'timeseries' batch.batch_id %}">{{ batch.batch_id }}</td>  
+            {% endif %}
+            </tr>
+        {% endif %}
+      {% endfor %}
+  </tbody>
 </table>
 
 {% endblock content %}

@@ -19,9 +19,12 @@ develop:  ## Run development server
 stop: ## Stop development server
 	docker-compose down --remove-orphans
 
-shell:  ## Open shell in running docker development container
+terminal:  ## Open terminal in running docker development container
 	docker-compose exec web /bin/bash
 
+shell:  ## Open django shell in running docker development container
+	docker-compose exec web python manage.py shell
+	
 migrations: # make development migrations
 	docker-compose exec web python manage.py makemigrations
 
