@@ -31,7 +31,7 @@ services:
     environment:
       - VIRTUAL_HOST=sensordata.kristianms.com
       - VIRTUAL_PORT=1368
-      - LETSENCRYPT_HOST=sensordata.kristiams.com
+      - LETSENCRYPT_HOST=sensordata.kristianms.com
       - LETSENCRYPT_EMAIL=kmollerschmidt@gmail.com
       - url=https://sensordata.kristianms.com
     networks:
