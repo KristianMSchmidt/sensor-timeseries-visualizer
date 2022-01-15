@@ -4,6 +4,7 @@ from datetime import datetime
 from .models import SensorData, Batch
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_POST
 
 DATA_PATH = os.path.join(os.path.dirname(__file__), 'data')
 SENSORS = ('400E_PH1', '400E_PH2', '400E_Temp1', '400E_Temp2')
@@ -12,15 +13,30 @@ BATCH_IDS = ('AP400E0101', 'AP400E0102', 'BP400E0101', 'BP400E0102', 'CP400E0101
 def timeseries_view(request, batch_id = None):
     
     batch = Batch.objects.get(batch_id=batch_id) # <- check for existen (batch id knoen?)
-
     batch_data = SensorData.objects.filter(timestamp__gt=batch.start_date, timestamp__lt=batch.end_date)
+
     context = {}
+    context['batch_ids'] = BATCH_IDS
+
+    # Prepara sensor data 
     for sensor in SENSORS:
         sensor_batch_data = batch_data.filter(sensor=sensor)
         context[sensor] = [{'x':str(data.timestamp), 'y':data.value} for data in sensor_batch_data]   
         context['data_count'] = batch_data.count()
         context['batch'] = batch 
-    context['batch_ids'] = BATCH_IDS
+    
+    # Prepare sensor temperature difference data
+    temp1 = batch_data.filter(sensor='400E_Temp1') 
+    temp2 = batch_data.filter(sensor='400E_Temp2')     
+    temp_diffs = [{'x':str(temp1.timestamp), 'y':(temp1.value - temp2.value)} for (temp1, temp2) in zip(temp1, temp2)]
+    context['temp_diffs'] = temp_diffs
+
+    # Prepare sensor PH difference data
+    ph1 = batch_data.filter(sensor='400E_PH1') 
+    ph2 = batch_data.filter(sensor='400E_PH2')     
+    ph_diffs = [{'x':str(ph1.timestamp), 'y':(ph1.value - ph2.value)} for (ph1, ph2) in zip(ph1, ph2)]
+    context['ph_diffs'] = ph_diffs
+
     return render(request, "visualizer/timeseries.html", context)
 
 
@@ -32,11 +48,12 @@ def home_view(request):
 def about_view(request):
     return render(request, "visualizer/about.html")
 
-
+@require_POST
 @login_required
 def load_data_view(request):
     """
-    Loads data from csv-files into tables.
+    Loads data from csv-files into tables. 
+    When loading batch meta data, the duration of each batch is also calculated and stored. 
     """
     SensorData.objects.all().delete()
     Batch.objects.all().delete()
@@ -79,7 +96,8 @@ def load_data_view(request):
     meta_data_num = Batch.objects.all().count()
 
     return HttpResponse(
-        f"Successfully loaded {sensor_num} rows of sensor data and {meta_data_num} rows of meta data.<br>56827 is the correct number of sensor rows.<br>")
+        f"Successfully loaded {sensor_num} rows of sensor data and {meta_data_num} " +
+        "rows of meta data.<br>56827 is the correct number of sensor rows.<br>")
     
 
 def sandbox():
