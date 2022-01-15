@@ -1,7 +1,7 @@
 ## ----------------------------------------------------------------------
-## Makefile for Timeseries Data Visualizatio challenge.
+## Makefile for Timeseries Data Visualization challenge.
 ##
-## Used in development.
+## Used in both development and production. See targets below.
 ## ----------------------------------------------------------------------
 
 help:   # Show this help.
@@ -39,4 +39,24 @@ dev_superuser: # make development superuser
 test: ## Execute tests within the docker image
 	docker-compose exec web python manage.py test
 
+
+
+# ---------- Production ---------- #
+production_stop: ## Stop production server
+	docker-compose -f docker-compose.prod.yml down --remove-orphans
+
+production_start: ## Start production server as daemon
+	docker-compose -f docker-compose.prod.yml up --build --remove-orphans -d
+
+production_djangologs: ## Show django logs
+	docker logs sensordatakristianmscom_web_1
+
+production_accesslogs: ## Show nginx access logs
+	docker logs sensordatakristianmscom_nginx_1
+
+production_terminal: # Open shell in running docker production container
+	docker-compose -f docker-compose.prod.yml exec web /bin/bash
+
+production_shell:  ## Open django shell in running docker development container
+	docker-compose -f docker-compose.prod.yml exec web python manage.py shell
 
