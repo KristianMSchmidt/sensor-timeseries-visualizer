@@ -1,0 +1,47 @@
+version: "3.3"
+
+services:
+  web:
+    restart: always
+    build: .
+    command: /bin/sh -c /code/entrypoint.prod.sh
+    volumes:
+      - database_volume:/db/
+      - static_volume:/code/static
+    expose:
+      - 8016
+    env_file:
+      - ./.env.prod
+    networks:
+      - reverse-proxy_proxynet
+
+  nginx:
+    restart: always
+    image: nginx:latest
+    hostname: sensordata.dataekspeditioner.dk
+    volumes:
+      - static_volume:/code/static
+      - type: bind
+        source: ./nginx_config/nginx.conf
+        target: /etc/nginx/conf.d/default.conf
+    expose:
+      - 1368
+    depends_on:
+      - web
+    environment:
+      - VIRTUAL_HOST=sensordata.dataekspeditioner.dk
+      - VIRTUAL_PORT=1368
+      - LETSENCRYPT_HOST=sensordata.dataekspeditioner.dk
+      - LETSENCRYPT_EMAIL=kmollerschmidt@gmail.com
+      - url=https://sensordata.dataekspeditioner.dk
+    networks:
+      - reverse-proxy_proxynet
+
+volumes:
+  database_volume: {}
+  static_volume: {}
+
+networks:
+  reverse-proxy_proxynet:
+    external: true
+
