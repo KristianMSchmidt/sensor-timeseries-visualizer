@@ -21,6 +21,7 @@ def batch_view(request, batch_id = BATCH_IDS[0]):
 
     # Prepare sensor data 
     for model, sensor in zip(models, sensors):
+        print(batch_info.start_date, batch_info.end_date)
         sensor_batch = model.objects.filter(
             timestamp__gt=batch_info.start_date, timestamp__lt=batch_info.end_date)
         sensor_batches[sensor] = sensor_batch 

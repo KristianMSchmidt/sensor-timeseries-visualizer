@@ -12,7 +12,7 @@
 <ul>
     <li>Start date: {{ batch_info.start_date|date:"Y-m-d H:i:s" }}</li>
     <li>End date: {{ batch_info.end_date|date:"Y-m-d H:i:s" }}</li>
-    <li>Duration: {{ batch_info.duration }}</li>
+    <li>Duration: {{ batch_info.duration }} </li>
     <li>Number of time steps: {{ time_steps }}</li>
 </ul>
 
@@ -27,98 +27,93 @@
 
 {% block javascript %}
 <!-- Javascript for rendering charts -->
-<script>
-    const ctx = document.getElementById("sensor-data-chart").getContext('2d');
-    const config = {
-      type: 'line',
-      data: {
-        labels: [],
-        datasets: [
-          {
-              data: {{ 400E_Temp1|safe }},  
-              label: "Temp1",
-              borderWidth: 1,
-              borderColor: "#3e95cd",
-              fill: false
+<script>  
+  const ctx = document.getElementById("sensor-data-chart").getContext('2d');
+  const ctx2 = document.getElementById("sensor-time-diff-chart").getContext('2d');
+  
+  options = {
+    scales: {
+      xAxes: [{
+        type: 'time',
+        time: {
+          unit: 'minute',
+          tooltipFormat:'YYYY-MM-DD HH:mm:ss',
+          displayFormats: {
+            millisecond: 'HH:mm:ss.SSS',
+            second: 'HH:mm:ss',
+            minute: 'HH:mm',
+            hour: 'HH'
           },
-          {
-              data: {{ 400E_Temp2|safe }}, 
-              label: "Temp2",
-              borderWidth: 1,
-              borderColor: "red",
-              fill: false
-          },
-          {
-              data: {{ 400E_PH1|safe }},  
-              label: "PH1",
-              borderWidth: 1,
-              borderColor: "green",
-              fill: false
-          }, 
-          {
-              data: {{ 400E_PH2|safe }}, 
-              label: "PH2",
-              borderWidth: 1,
-              borderColor: "orange",
-              fill: false
-          },
-        ]
-      },
-      options: {
-        scales: {
-          xAxes: [{
-            type: 'time',
-            distribution: 'linear',
-          }],
-          title: {
-            display: false,
-          }
         },
-      },
-      
-    };
-    
-    new Chart(ctx, config);
+        distribution: 'linear', //  data are spread according to their time (distances can vary)
+      }],
+    }
+  }
 
-</script>
-<script>
-    const ctx2 = document.getElementById("sensor-time-diff-chart").getContext('2d');
-    const config2 = {
-      type: 'line',
-      data: {
-        labels: [],
-        datasets: [
-          {
-              data: {{ temp_diffs|safe }},  
-              label: "Temp2 - Temp1",
-              borderWidth: 1,
-              borderColor: "#3e95cd",
-              fill: false
-          },
-          {
-            data: {{ ph_diffs|safe }},  
-            label: "PH2 - PH1",
+  const config = {
+    type: 'line',
+    data: {
+      labels: [],
+      datasets: [
+        {
+            data: {{ 400E_Temp1|safe }},  
+            label: "Temp1",
+            borderWidth: 1,
+            borderColor: "#3e95cd",
+            fill: false
+        },
+        {
+            data: {{ 400E_Temp2|safe }}, 
+            label: "Temp2",
             borderWidth: 1,
             borderColor: "red",
             fill: false
-          }
-        ]
-      },
-      options: {
-        scales: {
-          xAxes: [{
-            type: 'time',
-            distribution: 'linear',
-          }],
-          title: {
-            display: false,
-          }
+        },
+        {
+            data: {{ 400E_PH1|safe }},  
+            label: "PH1",
+            borderWidth: 1,
+            borderColor: "green",
+            fill: false
+        }, 
+        {
+            data: {{ 400E_PH2|safe }}, 
+            label: "PH2",
+            borderWidth: 1,
+            borderColor: "orange",
+            fill: false
+        },
+      ]
+    },
+    options: options
+  };    
+  const config2 = {
+    type: 'line',
+    data: {
+      labels: [],
+      datasets: [
+        {
+            data: {{ temp_diffs|safe }},  
+            label: "Temp2 - Temp1",
+            borderWidth: 1,
+            borderColor: "#3e95cd",
+            fill: false
+        },
+        {
+          data: {{ ph_diffs|safe }},  
+          label: "PH2 - PH1",
+          borderWidth: 1,
+          borderColor: "red",
+          fill: false
         }
-      }
-    };
-    
-    new Chart(ctx2, config2);
+      ]
+    },
+    options: options
+  };
 
+  new Chart(ctx, config);
+  new Chart(ctx2, config2);
+   
 </script>
 {% endblock javascript %}
 
