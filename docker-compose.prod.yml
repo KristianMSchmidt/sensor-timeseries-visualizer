@@ -18,7 +18,7 @@ services:
   nginx:
     restart: always
     image: nginx:latest
-    hostname: sensordata.dataekspeditioner.dk
+    hostname: sensordata.kristianms.com
     volumes:
       - static_volume:/code/static
       - type: bind
@@ -29,9 +29,9 @@ services:
     depends_on:
       - web
     environment:
-      - VIRTUAL_HOST=sensordata.dataekspeditioner.dk
+      - VIRTUAL_HOST=sensordata.kristiams.com
       - VIRTUAL_PORT=1368
-      - LETSENCRYPT_HOST=sensordata.dataekspeditioner.dk
+      - LETSENCRYPT_HOST=sensordata.kristiams.com
       - LETSENCRYPT_EMAIL=kmollerschmidt@gmail.com
       - url=https://sensordata.dataekspeditioner.dk
     networks:
