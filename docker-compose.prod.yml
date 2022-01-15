@@ -29,7 +29,7 @@ services:
     depends_on:
       - web
     environment:
-      - VIRTUAL_HOST=sensordata.kristiams.com
+      - VIRTUAL_HOST=sensordata.kristianms.com
       - VIRTUAL_PORT=1368
       - LETSENCRYPT_HOST=sensordata.kristiams.com
       - LETSENCRYPT_EMAIL=kmollerschmidt@gmail.com
