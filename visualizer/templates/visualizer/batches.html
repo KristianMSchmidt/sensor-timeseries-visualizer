@@ -1,6 +1,6 @@
 {% extends 'visualizer/_base.html' %}
 
-{% block title %}Batches{% endblock title %}
+{% block title %}Sensor Data{% endblock title %}
 
 {% block content %}
 
@@ -71,7 +71,7 @@
             label: "Temp1",
             borderWidth: 1,
             borderColor: "#3e95cd",
-            showLine: false
+            showLine: false 
         },
         {
             data: {{ 400E_Temp2|safe }}, 
