@@ -66,7 +66,7 @@ def deviations_view(request, batch_id = BATCH_IDS[0]):
     ph_diffs = [
         {'x':str(ph1.timestamp), 'y':(ph2.value - ph1.value)} 
          for (ph1, ph2) in zip(ph1, ph2)
-        ]
+    ]
     context['ph_diffs'] = ph_diffs
 
     # Count number of time steps in batch (same for each sensor)

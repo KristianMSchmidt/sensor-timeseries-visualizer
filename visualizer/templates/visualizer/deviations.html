@@ -5,11 +5,14 @@
 {% block content %}
 
 {% for batch_id in batch_ids %}
-    {% if 'TEST' in batch_id %}
-        <a class="btn btn-outline-secondary my-3" href="{% url 'deviations' batch_id %}">{{ batch_id }}</a>
-    {% else %}
-        <a class="btn btn-outline-primary my-3" href="{% url 'deviations' batch_id %}">{{ batch_id }}</a>
-    {% endif %}
+    <a 
+      {% if 'TEST' in batch_id %}
+          class="btn btn-outline-secondary my-3" 
+      {% else %}
+          class="btn btn-outline-primary my-3"
+      {% endif %}
+      href="{% url 'deviations' batch_id %}">{{ batch_id }}
+  </a>
 {% endfor %}
 
 <h2 class="mt-4"><span class="text-black-50">Batch:</span> {{ batch_info.batch_id }}</h2>
