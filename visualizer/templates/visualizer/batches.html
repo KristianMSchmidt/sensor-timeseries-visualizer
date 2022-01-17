@@ -1,55 +1,32 @@
 {% extends 'visualizer/_base.html' %}
 
-{% block title %}Timeseries{% endblock title %}
+{% block title %}Batches{% endblock title %}
 
 {% block content %}
 
 {% for batch_id in batch_ids %}
-    <a class="btn btn-outline-primary my-3" href="{% url 'batches' batch_id %}">{{ batch_id }}</a>
+    {% if not 'TEST' in batch_id %}
+        <a class="btn btn-outline-primary my-3" href="{% url 'batches' batch_id %}">{{ batch_id }}</a>
+    {% endif %}
 {% endfor %}
 
-<h2><span class="text-black-50">Batch:</span> {{ batch_info.batch_id }}</h2>
+<h2 class="mt-4"><span class="text-black-50">Batch:</span> {{ batch_info.batch_id }}</h2>
 <ul>
     <li>Start date: {{ batch_info.start_date|date:"Y-m-d H:i:s" }}</li>
     <li>End date: {{ batch_info.end_date|date:"Y-m-d H:i:s" }}</li>
     <li>Duration: {{ batch_info.duration }} </li>
-    <li>Number of time steps: {{ time_steps }}</li>
+    <li># Time steps: {{ time_steps }}</li>
 </ul>
 
 <h3 class="mt-4">Sensor Data</h3>
 <p class="text-muted">Click labels to show/hide data</p>
-<canvas id="sensor-data-chart"></canvas>
+<canvas class="mb-5" id="sensor-data-chart"></canvas>
 
-<h3 class="mt-5">Sensor Differences</h3>
-<p class="text-muted">Click labels to show/hide data</p>
-<canvas class="mb-5" id="sensor-time-diff-chart"></canvas>
 {% endblock content %}
 
 {% block javascript %}
-<!-- Javascript for rendering charts -->
+<!-- Javascript for rendering chart -->
 <script>  
-  const ctx = document.getElementById("sensor-data-chart").getContext('2d');
-  const ctx2 = document.getElementById("sensor-time-diff-chart").getContext('2d');
-  
-  options = {
-    scales: {
-      xAxes: [{
-        type: 'time',
-        time: {
-          unit: 'minute',
-          tooltipFormat:'YYYY-MM-DD HH:mm:ss',
-          displayFormats: {
-            millisecond: 'HH:mm:ss.SSS',
-            second: 'HH:mm:ss',
-            minute: 'HH:mm',
-            hour: 'HH'
-          },
-        },
-        distribution: 'linear', //  data are spread according to their time (distances can vary)
-      }],
-    }
-  }
-
   const config = {
     type: 'line',
     data: {
@@ -85,34 +62,27 @@
         },
       ]
     },
-    options: options
+    options: {
+      scales: {
+          x: {
+              type: 'timeseries', // not different from type:'time' in our case as timesteps are equidistant
+              time: {
+                unit: 'hour',
+                tooltipFormat:'yyyy-MM-dd HH:mm:ss',
+                displayFormats: {
+                  hour: 'HH:mm'
+                },
+              },
+          }
+      },
+      parsing: {
+        xAxisKey: 'timestamp',
+        yAxisKey: 'value'
+      }
+    }
   };    
-  const config2 = {
-    type: 'line',
-    data: {
-      labels: [],
-      datasets: [
-        {
-            data: {{ temp_diffs|safe }},  
-            label: "Temp2 - Temp1",
-            borderWidth: 1,
-            borderColor: "#3e95cd",
-            fill: false
-        },
-        {
-          data: {{ ph_diffs|safe }},  
-          label: "PH2 - PH1",
-          borderWidth: 1,
-          borderColor: "red",
-          fill: false
-        }
-      ]
-    },
-    options: options
-  };
-
+  const ctx = document.getElementById("sensor-data-chart").getContext('2d');
   new Chart(ctx, config);
-  new Chart(ctx2, config2);
    
 </script>
 {% endblock javascript %}

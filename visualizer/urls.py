@@ -6,5 +6,7 @@ urlpatterns = [
     path('about/', views.about_view, name='about'),
     path('batches/', views.batch_view, name='batches'),
     path('batches/<batch_id>', views.batch_view, name='batches'),
+    path('deviations/', views.deviations_view, name='deviations'),
+    path('deviations/<batch_id>', views.deviations_view, name='deviations'),
 ]
 

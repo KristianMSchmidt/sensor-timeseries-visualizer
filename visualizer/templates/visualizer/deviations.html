@@ -1,0 +1,96 @@
+{% extends 'visualizer/_base.html' %}
+
+{% block title %}Differences{% endblock title %}
+
+{% block content %}
+
+{% for batch_id in batch_ids %}
+    {% if 'TEST' in batch_id %}
+        <a class="btn btn-outline-secondary my-3" href="{% url 'deviations' batch_id %}">{{ batch_id }}</a>
+    {% else %}
+        <a class="btn btn-outline-primary my-3" href="{% url 'deviations' batch_id %}">{{ batch_id }}</a>
+    {% endif %}
+{% endfor %}
+
+<h2 class="mt-4"><span class="text-black-50">Batch:</span> {{ batch_info.batch_id }}</h2>
+<ul class="mb-5">
+    <li>Start date: {{ batch_info.start_date|date:"Y-m-d H:i:s" }}</li>
+    <li>End date: {{ batch_info.end_date|date:"Y-m-d H:i:s" }}</li>
+    <li>Duration: {{ batch_info.duration }} </li>
+    <li># Time steps: {{ time_steps }}</li>
+</ul>
+
+<h3 class="mt-4">Time Sensor Deviations</h3>
+<canvas id="time-diff-chart"></canvas>
+
+<h3 class="mt-5">PH Sensor Deviations</h3>
+<canvas class="mb-5" id="ph-diff-chart"></canvas>
+{% endblock content %}
+
+{% block javascript %}
+
+<!-- Javascript for rendering charts -->
+ <script>  
+ 
+  options = {
+    scales: {
+        x: {
+            type: 'timeseries', // type:'time' would be the same in our case as timesteps are equidistant
+            time: {
+              unit: 'hour',
+              tooltipFormat:'yyyy-MM-dd HH:mm:ss',
+              displayFormats: {
+                hour: 'HH:mm'
+              },
+            },
+        }
+    },
+    parsing: {
+      xAxisKey: 'timestamp',
+      yAxisKey: 'value'
+    }
+  }
+
+  const temp_config = {
+    type: 'line',
+    data: {
+      labels: [],
+      datasets: [
+        {
+            data: {{ temp_diffs|safe }},  
+            label: "Temp2 - Temp1",
+            borderWidth: 1,
+            borderColor: "#3e95cd",
+            fill: false
+        }
+      ]
+    },
+    options: options
+  };
+
+  const ph_config = {
+    type: 'line',
+    data: {
+      labels: [],
+      datasets: [
+        {
+          data: {{ ph_diffs|safe }},  
+          label: "PH2 - PH1",
+          borderWidth: 1,
+          borderColor: "red",
+          fill: false
+        }
+      ]
+    },
+    options: options
+  };
+
+  const ctx = document.getElementById("time-diff-chart").getContext('2d');
+  const ctx2 = document.getElementById("ph-diff-chart").getContext('2d');
+ 
+  new Chart(ctx, temp_config);
+  new Chart(ctx2, ph_config);
+   
+</script> 
+{% endblock javascript %}
+
