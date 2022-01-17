@@ -25,7 +25,7 @@ def batch_view(request, batch_id = BATCH_IDS[0]):
     context['batch_ids'] = BATCH_IDS
     context['batch_info'] = batch_info 
 
-    # Prepare sensor data for timeseries chart 
+    # Prepare data for sensor data charts 
     for model, sensor in zip(MODELS, SENSORS):
         sensor_batch = model.objects.filter(
              timestamp__gt=batch_info.start_date, timestamp__lt=batch_info.end_date).all() 
@@ -51,7 +51,7 @@ def deviations_view(request, batch_id = BATCH_IDS[0]):
         sensor_batches[sensor] = model.objects.filter(
              timestamp__gt=batch_info.start_date, timestamp__lt=batch_info.end_date).all() 
     
-    # Prepare sensor temperature difference data for chart
+    # Prepare data for temperature deviation chart
     temp1 = sensor_batches['400E_Temp1'] 
     temp2 = sensor_batches['400E_Temp2'] 
     temp_diffs = [
@@ -60,7 +60,7 @@ def deviations_view(request, batch_id = BATCH_IDS[0]):
     ]
     context['temp_diffs'] = temp_diffs
 
-    # Prepare sensor PH difference data for chart
+    # Prepare data fpr PH difference chart
     ph1 = sensor_batches['400E_PH1'] 
     ph2 = sensor_batches['400E_PH2'] 
     ph_diffs = [
