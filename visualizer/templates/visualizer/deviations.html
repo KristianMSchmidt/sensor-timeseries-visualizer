@@ -20,71 +20,84 @@
     <li># Time steps: {{ time_steps }}</li>
 </ul>
 
-<h3 class="mt-4">Time Sensor Deviations</h3>
-<canvas id="time-diff-chart"></canvas>
+<h3 class="mt-4">Temperature Deviations </h3>
+<canvas class="mb-5" id="time-diff-chart"></canvas>
 
-<h3 class="mt-5">PH Sensor Deviations</h3>
+<h3 class="mt-4">PH Value Deviations </h3>
 <canvas class="mb-5" id="ph-diff-chart"></canvas>
+
 {% endblock content %}
 
 {% block javascript %}
 
 <!-- Javascript for rendering charts -->
- <script>  
- 
-  options = {
-    scales: {
-        x: {
-            type: 'timeseries', // type:'time' would be the same in our case as timesteps are equidistant
-            time: {
-              unit: 'hour',
-              tooltipFormat:'yyyy-MM-dd HH:mm:ss',
-              displayFormats: {
-                hour: 'HH:mm'
-              },
-            },
-        }
-    },
-    parsing: {
-      xAxisKey: 'timestamp',
-      yAxisKey: 'value'
+ <script> 
+
+  scales = {
+    x: {
+        type: 'timeseries', // type:'time' would be the same in our case as timesteps are equidistant
+        time: {
+          unit: 'hour',
+          tooltipFormat:'yyyy-MM-dd HH:mm:ss',
+          displayFormats: {
+            hour: 'HH:mm'
+          },
+        },
     }
   }
-
+  
   const temp_config = {
     type: 'line',
     data: {
-      labels: [],
       datasets: [
         {
             data: {{ temp_diffs|safe }},  
             label: "Temp2 - Temp1",
             borderWidth: 1,
             borderColor: "#3e95cd",
-            fill: false
+            fill: false,
+            showLine: false
         }
       ]
     },
-    options: options
-  };
+    options: {
+      scales: scales,
+      plugins: {
+        title: {
+          display: true,
+          text: 'Temperature Sensor Deviations',
+        },
+      }
+    }
+    
+  }
 
   const ph_config = {
     type: 'line',
     data: {
-      labels: [],
       datasets: [
         {
           data: {{ ph_diffs|safe }},  
           label: "PH2 - PH1",
           borderWidth: 1,
           borderColor: "red",
-          fill: false
+          fill: false,
+          showLine: false
         }
       ]
     },
-    options: options
+    options: {
+      scales: scales,
+      plugins: {
+        title: {
+          display: true,
+          text: 'PH Sensor Deviations',
+        },
+      }
+    }
   };
 
+  
   const ctx = document.getElementById("time-diff-chart").getContext('2d');
   const ctx2 = document.getElementById("ph-diff-chart").getContext('2d');
  

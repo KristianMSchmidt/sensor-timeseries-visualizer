@@ -31,9 +31,9 @@ def batch_view(request, batch_id = BATCH_IDS[0]):
         sensor_batch = model.objects.filter(
              timestamp__gt=batch_info.start_date, timestamp__lt=batch_info.end_date).all() 
 
-        context[sensor] = [{'timestamp': str(row.timestamp), 'value': row.value} for row in sensor_batch]
+        context[sensor] = [{'x': str(row.timestamp), 'y': row.value} for row in sensor_batch]
 
-    # Count number of time steps in batch (is the same for each sensor)
+    # Count number of time steps in batch (same for each sensor)
     context['time_steps'] = sensor_batch.count()
            
     return render(request, "visualizer/batches.html", context)
@@ -59,7 +59,7 @@ def deviations_view(request, batch_id = BATCH_IDS[0]):
     temp1 = sensor_batches['400E_Temp1'] 
     temp2 = sensor_batches['400E_Temp2'] 
     temp_diffs = [
-        {'timestamp':str(temp1.timestamp), 'value':(temp1.value - temp2.value)}
+        {'x':str(temp1.timestamp), 'y':(temp1.value - temp2.value)}
          for (temp1, temp2) in zip(temp1, temp2)
     ]
     context['temp_diffs'] = temp_diffs
@@ -68,12 +68,12 @@ def deviations_view(request, batch_id = BATCH_IDS[0]):
     ph1 = sensor_batches['400E_PH1'] 
     ph2 = sensor_batches['400E_PH2'] 
     ph_diffs = [
-        {'timestamp':str(ph1.timestamp), 'value':(ph1.value - ph2.value)} 
+        {'x':str(ph1.timestamp), 'y':(ph1.value - ph2.value)} 
          for (ph1, ph2) in zip(ph1, ph2)
         ]
     context['ph_diffs'] = ph_diffs
 
-    # Count number of time steps in batch
+    # Count number of time steps in batch (same for each sensor)
     context['time_steps'] = sensor_batches['400E_Temp1'].count()
 
     return render(request, "visualizer/deviations.html", context)

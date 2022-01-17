@@ -18,71 +18,132 @@
     <li># Time steps: {{ time_steps }}</li>
 </ul>
 
-<h3 class="mt-4">Sensor Data</h3>
-<p class="text-muted">Click labels to show/hide data</p>
-<canvas class="mb-5" id="sensor-data-chart"></canvas>
+<h3 class="mt-5">Temperature Sensor Data </h3>
+<canvas class="mb-5" id="temp-data-chart"></canvas>
+
+<h3 class="mt-4">PH Sensor Data </h3>
+<canvas class="mb-5" id="ph-data-chart"></canvas>
 
 {% endblock content %}
 
 {% block javascript %}
 <!-- Javascript for rendering chart -->
 <script>  
-  const config = {
+  
+  scales = {
+    x: {
+      type: 'timeseries', // not different from type:'time' in our case as timesteps are equidistant
+      time: {
+        unit: 'hour',
+        tooltipFormat:'yyyy-MM-dd HH:mm:ss',
+        displayFormats: {
+          hour: 'HH:mm'
+        },
+      },
+    }
+  }
+
+  // Custom callback to prevent Chart.js from rounding decimal values on tooltip
+  // (tooltip rounding is fine on sensor deviation charts, but we want to see precise values here)
+  plugins_tooltip = {
+    callbacks: {
+      label: function(context) {
+        let label = context.dataset.label || '';
+
+        if (label) {
+            label += ': ';
+        }
+        if (context.parsed.y !== null) {
+            label += context.parsed.y;
+        }
+        return label;
+      }
+    }
+  }
+
+  const temp_config = {
     type: 'line',
     data: {
-      labels: [],
+      fill: false,
       datasets: [
         {
             data: {{ 400E_Temp1|safe }},  
             label: "Temp1",
             borderWidth: 1,
             borderColor: "#3e95cd",
-            fill: false
+            showLine: false
         },
         {
             data: {{ 400E_Temp2|safe }}, 
             label: "Temp2",
             borderWidth: 1,
             borderColor: "red",
-            fill: false
+            showLine: false
+          }
+      ]
+    },
+    options: {
+      scales: scales,
+      plugins: {
+        title: {
+          display: true,
+          text: 'Temperature Sensors',
+          font: {
+            size: 14,
+          }
         },
+        subtitle: {
+            display: true,
+            text: 'Click labels to show/hide sensor dataset'
+        },
+        tooltip: plugins_tooltip
+      },
+    }
+  }
+  const ph_config = {
+    type: 'line',
+    data: {
+      fill: false,
+      datasets: [
         {
             data: {{ 400E_PH1|safe }},  
             label: "PH1",
             borderWidth: 1,
             borderColor: "green",
-            fill: false
+            showLine: false
         }, 
         {
             data: {{ 400E_PH2|safe }}, 
             label: "PH2",
             borderWidth: 1,
             borderColor: "orange",
-            fill: false
+            showLine: false
         },
       ]
     },
     options: {
-      scales: {
-          x: {
-              type: 'timeseries', // not different from type:'time' in our case as timesteps are equidistant
-              time: {
-                unit: 'hour',
-                tooltipFormat:'yyyy-MM-dd HH:mm:ss',
-                displayFormats: {
-                  hour: 'HH:mm'
-                },
-              },
+      scales: scales,
+      plugins: {
+        title: {
+          display: true,
+          text: 'PH Sensors',
+          font: {
+            size: 14,
           }
-      },
-      parsing: {
-        xAxisKey: 'timestamp',
-        yAxisKey: 'value'
+        },
+        subtitle: {
+            display: true,
+            text: 'Click labels to show/hide sensor dataset'
+        },
+        tooltip: plugins_tooltip
       }
     }
-  };    
-  const ctx = document.getElementById("sensor-data-chart").getContext('2d');
-  new Chart(ctx, config);
+  }
+
+  const temp_ctx = document.getElementById("temp-data-chart").getContext('2d');
+  const ph_ctx = document.getElementById("ph-data-chart").getContext('2d');
+  new Chart(temp_ctx, temp_config);
+  new Chart(ph_ctx, ph_config);
    
 </script>
 {% endblock javascript %}
