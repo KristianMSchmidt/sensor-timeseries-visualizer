@@ -50,14 +50,14 @@
   }
   
   const temp_config = {
-    type: 'line',
+    type: 'scatter',
     data: {
       datasets: [
         {
             data: {{ temp_diffs|safe }},  
             label: "Temp2 - Temp1",
             borderWidth: 1,
-            borderColor: "#3e95cd",
+            borderColor: "green",
             fill: false,
             showLine: false
         }
@@ -76,7 +76,7 @@
   }
 
   const ph_config = {
-    type: 'line',
+    type: 'scatter',
     data: {
       datasets: [
         {

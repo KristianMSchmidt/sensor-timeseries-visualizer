@@ -10,19 +10,19 @@ class BatchInfo(models.Model):
     batch_id = models.CharField(max_length=10)
 
 class Temp1(models.Model):
-    timestamp = models.DateTimeField()
+    timestamp = models.DateTimeField(primary_key=True)
     value = models.FloatField()
     
 class Temp2(models.Model):
-    timestamp = models.DateTimeField()
+    timestamp = models.DateTimeField(primary_key=True)
     value = models.FloatField()
     
 class Ph1(models.Model):
-    timestamp = models.DateTimeField()
+    timestamp = models.DateTimeField(primary_key=True)
     value = models.FloatField()
     
 class Ph2(models.Model):
-    timestamp = models.DateTimeField()
+    timestamp = models.DateTimeField(primary_key=True)
     value = models.FloatField()
     
 
