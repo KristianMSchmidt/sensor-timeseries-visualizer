@@ -27,9 +27,18 @@ def batch_view(request, batch_id = BATCH_IDS[0]):
 
     # Prepare data for sensor data charts 
     for model, sensor in zip(MODELS, SENSORS):
+        
         sensor_batch = model.objects.filter(
-             timestamp__gt=batch_info.start_date, timestamp__lt=batch_info.end_date).all() 
-        context[sensor] = [{'x': str(row.timestamp), 'y': row.value} for row in sensor_batch]
+             pk__gt=batch_info.start_date, 
+             pk__lt=batch_info.end_date
+        ).all() 
+        
+        context[sensor] = [
+            {
+                'x': str(row.timestamp), 
+                'y': row.value
+            } for row in sensor_batch
+        ]
 
     # Count number of time steps in batch (same for each sensor)
     context['time_steps'] = sensor_batch.count()
@@ -48,14 +57,20 @@ def deviations_view(request, batch_id = BATCH_IDS[0]):
     # Query batch data for each sensor
     sensor_batches = {}
     for model, sensor in zip(MODELS, SENSORS):
+        
         sensor_batches[sensor] = model.objects.filter(
-             timestamp__gt=batch_info.start_date, timestamp__lt=batch_info.end_date).all() 
+             pk__gt=batch_info.start_date, 
+             pk__lt=batch_info.end_date
+        ).all() 
     
     # Prepare data for temperature deviation chart
     temp1 = sensor_batches['400E_Temp1'] 
     temp2 = sensor_batches['400E_Temp2'] 
     temp_diffs = [
-        {'x':str(temp1.timestamp), 'y':(temp2.value - temp1.value)}
+        {
+            'x': str(temp1.timestamp), 
+            'y': (temp2.value - temp1.value)
+        }
          for (temp1, temp2) in zip(temp1, temp2)
     ]
     context['temp_diffs'] = temp_diffs
@@ -64,7 +79,10 @@ def deviations_view(request, batch_id = BATCH_IDS[0]):
     ph1 = sensor_batches['400E_PH1'] 
     ph2 = sensor_batches['400E_PH2'] 
     ph_diffs = [
-        {'x':str(ph1.timestamp), 'y':(ph2.value - ph1.value)} 
+        {
+            'x': str(ph1.timestamp), 
+            'y': (ph2.value - ph1.value)
+        } 
          for (ph1, ph2) in zip(ph1, ph2)
     ]
     context['ph_diffs'] = ph_diffs
